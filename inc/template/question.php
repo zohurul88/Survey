@@ -1,16 +1,16 @@
 <?php 
-	$questions=$qa->surveyQuestions($this->current_survey);
+	$questions=$qa->surveyQuestions($this->current_survey,"ASC");
 	foreach($questions as $question):
 	//pr($question);
 	$id=$question->id; 
 	$rand_id=rand(00000,99999);
 	$hasAnswer=$qa->question($question->id)->hasAnswer();
 	?>
-<li class="question <?php echo $hasAnswer==true?'has-answer':''; ?>">
+<li data-previndex="<?php echo $question->q_order; ?>" data-qid="<?php echo $id; ?>" class="question <?php echo $hasAnswer==true?'has-answer':''; ?>">
 		<form id="qa-<?php echo empty($id)?$rand_id:$id; ?>" action="post" data-qid="<?php echo !empty($id)?$id:'rand'; ?>">
 			<input name="qid" type="hidden" value="<?php echo empty($id)?$rand_id:$id; ?>" /> 
 			<input name="sid" class="survey-id" type="hidden" value="<?php echo $this->current_survey; ?>" /> 
-			<input name="order" class="question-order" type="hidden" value="<?php echo empty($id)?$rand_id:-1; ?>" /> 
+			<input name="order" class="question-order" type="hidden" value="<?php echo $question->q_order; ?>" /> 
 			<input name="response" type="hidden" value="json" /> 
 			<?php wp_nonce_field('_survey-question','token'); ?>
 			<?php if(empty($id)): ?>
@@ -19,7 +19,7 @@
 			<input type="hidden" class="data-action" name="action" value="" />
 			<div class="question-head">
 				<h3 class="question-title">
-					<span><?php echo !empty($question->title)?$question->title:'Untitle' ?></span>
+					<span><?php echo $id; echo " "; echo !empty($question->title)?$question->title:'Untitle' ?></span>
 				</h3>
 				<div class="button-group">
 					<button type="button" data-action="edit-question" class="question-action button q-edit">Edit</button>

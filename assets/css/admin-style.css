@@ -50,7 +50,7 @@
 .survey .control:not(:last-child){margin-bottom: 10px;width: 100%;display: block;}
 .survey .control.no-control{margin-top: -8px;}.survey .control.no-control input{width: 99%;}
 .survey .sv-title{ border-bottom: 1px solid rgb(238, 238, 238); padding: 15px 10px 12px; line-height: 28px; }
-.survey .question-lists{padding: 0 40px;}
+.survey .question-lists{padding: 0 10px;}
 .survey .question-lists li{border:1px solid #eee; padding: 0 0 0;}
 .survey .question-lists li .question-title,.survey .answer-list li .answer-title{border-bottom: 1px solid #eee;}
 .survey .question-lists li.collapse .question-title{margin-bottom: 10px;}

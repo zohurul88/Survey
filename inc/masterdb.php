@@ -18,7 +18,7 @@
 
 		function result($tbl,$where=null,$fields=null,$ext=null)	{
 			global $wpdb; 
-			if (!empty($ext)) {
+			if (!empty($ext)) { 
 				$ext=array_filter($ext);
 				$extSqlTxt='';
 				if(isset($ext['order_by']))

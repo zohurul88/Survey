@@ -119,6 +119,17 @@
 				}
 			}
 		}
+
+		function questionOrderChanges($req)
+		{
+			$updatlist=array();
+			foreach ($req->order as $qid => $order) {
+				$up=$this->qa->updateOrder($qid,$order);
+				if($up->rows_affected) $updatlist[$qid]=true;
+			}
+			$this->jsonPush('update',$updatlist);
+			echo $this->json();
+		}
 		
 		function answerList($answers)
 		{
@@ -194,7 +205,7 @@
 		function addQuestionHTML($req)
 		{
 			$rand_id=rand(00000,99999);
-			echo '<div><li class="question collapse">
+			echo '<div><li class="question collapse" data-previndex="" data-qid="rand">
 								<form id="qa-'.$rand_id.'" action="post" data-qid="rand">
 									<input name="qid" type="hidden" value="'.$rand_id.'" /> 
 									<input name="sid" class="survey-id" type="hidden" value="" /> 
@@ -220,7 +231,7 @@
 												<p>
 													<textarea placeholder="Question Description" class="" name="desc"></textarea>
 												</p>
-												<button data-action="save-question" type="button" data-target="qa-<?php echo $rand_id; ?>" class="button button-primary right question-action">Save & Add Answer</button> 
+												<button data-action="save-question" type="button" data-target="qa-'.$rand_id.'" class="button button-primary right question-action">Save & Add Answer</button> 
 												<div class="clear"></div>
 											</div>
 										<div class="actions">
@@ -257,6 +268,7 @@
 			add_action( 'wp_ajax_remove-question', array($this,'removeQuestion'));
 			add_action( 'wp_ajax_edit-question', array($this,'editFormRequest'));
 			add_action( 'wp_ajax_new-form-request', array($this,'answerFormHTML'));
+			add_action( 'wp_ajax_order-question-changed', array($this,'questionOrderChanges'));
 			$this->request=$_REQUEST; 
 			$this->sv=$sv;
 			$this->qa=$qa;

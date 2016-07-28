@@ -33,8 +33,16 @@ jQuery(document).ready(function($){
 	function questionShortable()
 	{
 		 ques.sortable({
+		 	axis: 'y',
 		 	handle: '.question-title',
-		 	placeholder: "ui-state-highlight"
+		 	placeholder: "ui-state-highlight",
+		 	update: function(event, ui) {
+		 		var prev=$(this).data('previndex');
+		 		updateQuestionIndex(ui.item,prev,ui.item.index())
+		 	},
+		 	start : function(event, ui) {
+		 		$(this).data('previndex', ui.item.index()); 
+      }
 		 });
 	}
 	questionShortable();
@@ -42,6 +50,7 @@ jQuery(document).ready(function($){
 	function answerShortable()
 	{
 		 answer.sortable({
+		 	axis: 'y',
 		 	handle: '.answer-title',
 		 	placeholder: "ui-state-highlight"
 		 });
@@ -61,10 +70,11 @@ jQuery(document).ready(function($){
 			var data={action:$(this).attr('href').replace("#",""), token:local.no_once };
 			$.post(local.ajax_url, data, function(response) {
 				ques.find('li').removeClass('collapse');
-				var order=ques.find('li').size();
-				console.log(order);
+				var order=ques.find('li').length;++order;
 				response=$.parseHTML(response);
-				response=$(response);   
+				response=$(response);
+				response.find(".question-order").val(order);
+				response.data("previndex",order);
 				ques.append(response.find(".question").parent('div').html());
 				questionShortable();
 			});
@@ -163,7 +173,10 @@ jQuery(document).ready(function($){
 	{
 		if(data['action']=="save")
 		{
-			
+			question.find(".q-inside").slideUp(400);
+			setTimeout(function(){question.find(".q-inside").remove()},500);
+			question.find(".ajax-inside").html(data['html']);
+			answerShortable();
 		}
 		else if(data['action']=="edit")
 		{  
@@ -172,8 +185,10 @@ jQuery(document).ready(function($){
 		}
 		else if(data['action']=="update")
 		{
-				question.find(".q-inside").slideUp(400).delay(500).remove();
-				question.find(".ajax-inside").html(data['html']);
+			question.find(".q-inside").slideUp(400);
+			setTimeout(function(){question.find(".q-inside").remove()},500);
+			question.find(".ajax-inside").html(data['html']);
+			answerShortable();
 		}
 		else if(data['action']=="remove")
 		{
@@ -183,6 +198,53 @@ jQuery(document).ready(function($){
 			},500)
 			;
 		}
+	}
+
+	function updateQuestionIndex(elm,prev,current)
+	{
+		if(prev>current)
+		{
+			//Bottom to Top
+			var overTake=prev-current;
+			elm.data("previndex",++current);
+			elm.nextAll().each(function(){
+				if(overTake!=0){
+					$(this).data("previndex",++current);
+				}
+				overTake--;
+			});
+		}
+		else 
+		{
+			//Top to Bottom
+			var overTake=current-prev;
+			elm.data("previndex",++current);
+			elm.prevAll().each(function(){
+				if(overTake!=0){
+					$(this).data("previndex",--current);
+				}
+				overTake--;
+			});
+		}
+		var orderList={};
+		ques.find("li").each(function(){ 
+			if($(this).data("qid")!="rand")
+			{
+				orderList[$(this).data("qid")]=$(this).data("previndex");
+			}
+
+		});
+		console.log(orderList);
+		$.ajax({
+      type: "POST",
+      url: local.ajax_url,
+      dataType: 'json',
+      data:{action: 'order-question-changed', response: 'json', token: local.no_once, order: orderList},
+      success: function(data)
+	    {
+	    	console.log(data);
+	    }
+	  });
 	}
 
 });

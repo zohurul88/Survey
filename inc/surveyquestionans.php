@@ -65,21 +65,30 @@
 			return $this->update($this->table,$data,array($this->id=>$id));
 		}
 
+		function updateOrder($id,$order)
+		{
+			$r=$this->updateQuestions(array($this->q_order=>-9999),$id); 
+			$r=$this->updateQuestions(array($this->q_order=>$order),$id); 
+			return $r;
+		}
+
 		function removeQuestion($id)
 		{
 			if(empty($id)) return null;
 			return $this->delete($this->table,array($this->id=>$id));
 		}
 
-		function surveyQuestions($sid)
+		function surveyQuestions($sid,$order=null)
 		{
-			$result=$this->result($this->table,array($this->sid=>$sid));
+			if(!empty($order)) $order=array('order_by'=>$this->q_order,'order'=>$order);
+			$result=$this->result($this->table,array($this->sid=>$sid),null,$order);
 			return $this->last_result;
 		}
 
-		function question($id)
+		function question($id,$order=null)
 		{
-			$result=$this->result($this->table,array($this->id=>$id));
+			if(!empty($order)) $order=array('order_by'=>$this->q_order,'order'=>$order);
+			$result=$this->result($this->table,array($this->id=>$id),null,$order);
 			return $this;
 		}
 		
