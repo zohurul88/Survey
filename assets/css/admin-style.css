@@ -63,6 +63,11 @@
 #questions .question{background: #fff;}
 #questions .question.collapse.ui-sortable-helper{max-height: 37px !important;}
 #questions .question.collapse.ui-sortable-helper .q-section{max-height: 0 !important; transition: all ease-in-out 40ms;}
+
+.answer-list .answer{background: #fff;}
+.answer-list .answer.collapse.ui-sortable-helper{max-height: 37px !important;}
+.answer-list .answer.collapse.ui-sortable-helper .answer-inside{max-height: 0 !important; transition: all ease-in-out 40ms;}
+
 #questions .question .q-section{ max-height: 0; overflow: hidden; transition: all ease-in-out 400ms;}
 #questions .question.collapse .q-section{max-height: 1000px;}
 #questions .button-group{font-size: 14px;}
@@ -79,3 +84,5 @@
 
 .answer-list .answer .answer-inside{max-height: 0; overflow: hidden; transition:all ease-in-out 300ms;}
 .answer-list .answer.collapse .answer-inside{max-height: 1000px;}
+.answer-list .answer-action,.answer-list+.answer-action{margin: 10px 5px;}
+.answer-list .button-group .answer-action{margin: 0;}

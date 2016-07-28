@@ -22,15 +22,14 @@
 					<span><?php echo !empty($question->title)?$question->title:'Untitle' ?></span>
 				</h3>
 				<div class="button-group">
-					<button data-action="edit-question" type="button" class="question-action q-edit">Edit</button>
-					<button data-action="remove-question" class="question-action q-remove">Remove</button>
-					<button type="button" class="q-collapse">Collapse</button>
+					<button type="button" data-action="edit-question" class="question-action button q-edit">Edit</button>
+					<button type="button" data-action="remove-question" class="question-action button q-remove">Remove</button>
+					<button type="button" class="button q-collapse">Collapse</button>
 				</div>
 			</div>
 			<div class="q-section">
-				<div class="ajax-inside">
-				<?php if(!$hasAnswer && true==false): ?>
-					<div class="q-inside">   
+				<div class="ajax-inside"> 
+					<!--<div class="q-inside">   
 						<p>
 						<input placeholder="Question Title" class="q-textbox q-title" value="<?php echo $question->title; ?>" name="title" type="text">
 						</p>
@@ -39,10 +38,10 @@
 						</p>
 						<button data-action="save-question" type="button" data-target="qa-<?php echo $rand_id; ?>" class="button button-primary right question-action">Update & Add Answer</button> 
 						<div class="clear"></div>
-					</div>
-				<?php endif; ?>
+					</div>--> 
 					<h4> <span>Answer List</span> </h4>
 						<ul class="answer-list">
+						<?php if($hasAnswer): ?>
 							<li class="answer">
 							<div class="answer-head">
 							<h3 class="answer-title"> <span>First Answer</span> </h3>
@@ -56,22 +55,10 @@
 								<div class="form-control"><input type="text" name="name"></div>
 								<div class="form-control"><input type="text" name="murk"></div>
 							</div>
-						</li><li class="answer">
-							<div class="answer-head">
-							<h3 class="answer-title"> <span>First Answer</span> </h3>
-							<div class="button-group">
-								<button data-action="edit-answer" type="button" class="answer-action answer-edit">Edit</button>
-								<button data-action="remove-answer" class="answer-action answer-remove">Remove</button>
-								<button type="button" class="answer-collapse">Collapse</button>
-							</div>
-							</div>
-							<div class="answer-inside">
-								<div class="form-control"><input type="text" name="name"></div>
-								<div class="form-control"><input type="text" name="murk"></div>
-							</div>
 						</li>
+					<?php endif; ?>
 					</ul>
-					<button class="new-answer" type="button">+New Question</button>
+				<button class="button button-primary new-answer answer-action" data-action="new-form-request" type="button">+New Question</button>
 				</div>
 				<div class="actions">
 					<span class="left">

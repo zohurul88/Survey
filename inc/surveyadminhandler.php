@@ -172,6 +172,8 @@
 							<ul id="questions" class="question-lists" data-survey_id="<?php echo $this->current_survey; ?>">
 								<?php include_once(SCSURVEY_PATH.'/inc/template/question.php'); ?>
 							</ul>
+							<a id="question-form-1" href="#question-form" class="button button-primary">Add a Question</a>
+							<div class="clear"></div>
 						</div>
 				</div>			
 			</div>

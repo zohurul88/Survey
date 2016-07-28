@@ -71,7 +71,7 @@
 				if($result->rows_affected)
 				{
 					$this->jsonPush('action','save');
-					$this->jsonPush('html',$this->addAnswerHTML());
+					$this->jsonPush('html',$this->addInitAnswerHTML());
 					echo $this->json();
 				}else
 				{
@@ -102,10 +102,12 @@
 					$this->jsonPush('question',(array)$thisQ->last_result[0]);
 					if($thisQ->hasAnswer())
 					{
-						$this->jsonPush('html',$this->answerList());
+						$this->jsonPush('html',$this->addInitAnswerHTML($this->answerList($thisQ->last_result[0]->ans_list)));//$this->answerList()
 						$this->jsonPush('answers',json_decode($thisQ->last_result[0]->ans_list,true));
+						$this->jsonPush('has-answer',true);
 					}else{
-						$this->jsonPush('html',$this->addAnswerHTML());
+						$this->jsonPush('html',$this->addInitAnswerHTML());
+						$this->jsonPush('has-answer',false);
 					}
 					echo $this->json();
 					return;
@@ -117,13 +119,77 @@
 				}
 			}
 		}
-
-		function addAnswerHTML($inier_html)
+		
+		function answerList($answers)
 		{
-			return '<ul class="answ"'; 
+			return '<li class="answer new" data-order="" data-answer="0">
+								<div class="answer-head">
+								<h3 class="answer-title"> <span>First Answer</span> </h3>
+								<div class="button-group">
+									<button data-action="edit-answer" type="button" class="answer-action answer-edit">Edit</button>
+									<button data-action="remove-answer" class="answer-action answer-remove">Remove</button>
+									<button type="button" class="answer-collapse">Collapse</button>
+								</div>
+								</div>
+								<div class="answer-inside">
+									<div class="form-control"><input type="text" name="name"></div>
+									<div class="form-control"><input type="text" name="murk"></div>
+								</div>
+								<button class="button button-primary save-answer answer-action" data-action="save-answer" type="button">+New Question</button>
+						</li>';
 		}
 
-		//function fun
+		function answerFormHTML()
+		{
+			$this->jsonPush('action','new-answer');
+			$this->jsonPush('html', '<li class="answer collapse new" data-order="" data-title="" data-murk="" data-answer="0"> <div class="answer-head"> <h3 class="answer-title"> <span>Untitled</span> </h3> <div class="button-group"> <button data-action="edit-answer" type="button" class="answer-action answer-edit button">Edit</button> <button data-action="remove-answer" class="answer-action answer-remove button">Remove</button> <button type="button" class="answer-collapse button">Collapse</button> </div> </div> <div class="answer-inside"> <div class="form-control"><input type="text" placeholder="Answer Title" class="answer-textbox" name="name"></div> <div class="form-control"><input type="text" placeholder="Answer Murk" class="answer-murk" name="murk"></div> <button class="button right button-primary save-answer answer-action" data-action="save-answer" type="button">Save</button> </div> </li>');
+			echo $this->json();
+		}
+
+		function addInitAnswerHTML($inier_html=null)
+		{
+			return '<h4><span>Answer List</span> </h4><ul class="answer-list">'.$inier_html.'</ul><button class="button button-primary new-answer answer-action" data-action="new-form-request" type="button">+New Question</button>'; 
+		}
+
+		function removeQuestion($req)
+		{ 
+			$qa=$this->qa;
+			$rmv=$qa->removeQuestion($req->qid);
+			if($rmv->rows_affected)
+			{
+				$this->jsonPush('action','remove');
+				$this->jsonPush('msg','Questions Successfully Remove');
+				echo $this->json();
+			}
+			else 
+			{
+				$this->errorPush('Question Not Deleted. Last Error: '.$rmv->last_error);
+				echo $this->json();
+			}
+		}
+
+
+		function editFormHtml($data)
+		{
+			return '<div class="q-inside">   
+				<p>
+					<input value="'.$data->title.'" placeholder="Question Title" class="q-textbox q-title" name="title" type="text">
+				</p>
+				<p>
+					<textarea placeholder="Question Description" class="" name="desc">'.$data->q_desc.'</textarea>
+				</p>
+				<button data-action="save-question" type="button" data-target="qa-'.$data->id.'" class="button button-primary right question-action">Update</button> 
+				<div class="clear"></div>
+			</div>';
+		}
+
+		function editFormRequest($req)
+		{
+			$data=$this->qa->question($req->qid)->last_result[0];
+			$this->jsonPush('action','edit');
+			$this->jsonPush('html',$this->editFormHtml($data));
+			echo $this->json();
+		}
 
 		function addQuestionHTML($req)
 		{
@@ -140,9 +206,9 @@
 									<div class="question-head">
 										<h3 class="question-title"><span>Untitle</span></h3>
 										<div class="button-group">
-											<button data-action="edit-question" type="button" class="question-action q-edit">Edit</button>
-											<button data-action="remove-question" class="question-action q-remove">Remove</button>
-											<button type="button" class="q-collapse">Collapse</button>
+											<button data-action="edit-question" type="button" class="button question-action q-edit">Edit</button>
+											<button data-action="remove-question" class="button question-action q-remove">Remove</button>
+											<button type="button" class="button q-collapse">Collapse</button>
 										</div>
 									</div>
 									<div class="q-section">
@@ -188,6 +254,9 @@
 		{ 
 			add_action( 'wp_ajax_question-form', array($this,'addQuestionHTML'));
 			add_action( 'wp_ajax_save-question', array($this,'saveQuestions'));
+			add_action( 'wp_ajax_remove-question', array($this,'removeQuestion'));
+			add_action( 'wp_ajax_edit-question', array($this,'editFormRequest'));
+			add_action( 'wp_ajax_new-form-request', array($this,'answerFormHTML'));
 			$this->request=$_REQUEST; 
 			$this->sv=$sv;
 			$this->qa=$qa;
@@ -204,6 +273,7 @@
 					else  header("Content-Type: text/html");
 					$ajax->$name((object)$this->request,$this->sv,$this->qa);
 				}
+				else {echo 'Method not found! :(';}
 			die();
 		}
 

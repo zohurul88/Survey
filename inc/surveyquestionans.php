@@ -65,6 +65,12 @@
 			return $this->update($this->table,$data,array($this->id=>$id));
 		}
 
+		function removeQuestion($id)
+		{
+			if(empty($id)) return null;
+			return $this->delete($this->table,array($this->id=>$id));
+		}
+
 		function surveyQuestions($sid)
 		{
 			$result=$this->result($this->table,array($this->sid=>$sid));

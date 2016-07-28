@@ -56,6 +56,14 @@
 			return $this;
 		}
 
+		function delete($tbl,$where)
+		{
+			global $wpdb;
+			$wpdb->delete($tbl,$where);
+			$this->afterQuery($wpdb);
+			return $this;
+		}
+
 		function  selectSqlTxt($tbl,$where=null,$fields=null,$ext=null){
 			$cond=" AND ";
 			if(isset($where['cond']))
