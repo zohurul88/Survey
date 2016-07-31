@@ -32,7 +32,7 @@ if(class_exists('wpdb')){
 		function generateTblSql()
 		{
 			global $wpdb;
-			return "CREATE TABLE {$this->table} (
+			return "CREATE TABLE IF NOT EXISTS {$this->table} (
 			  {$this->id} int(5) NOT NULL AUTO_INCREMENT,
 			  PRIMARY KEY({$this->id}),
 			  {$this->title} varchar(500) NOT NULL,
@@ -94,7 +94,6 @@ if(class_exists('wpdb')){
 			if(empty($filter))
 				$this->result($this->table,null,null,$ext);
 			else $this->result($this->table,$filter,null,$ext);
-			echo $this->db->last_query;
 			return $this->db;
 		}
 
@@ -113,6 +112,23 @@ if(class_exists('wpdb')){
 		{
 			$result=$this->result($this->table,array($this->state=>'inactive'));
 			return $this->db;
+		}
+
+		function flipState($id)
+		{
+			$state=$this->findID($id,false)->state;
+			if($state=="active")
+				{if($this->save(array($this->state=>'inactive'),$id)) return true;}
+			else
+				{if($this->save(array($this->state=>'active'),$id)) return true;}
+			return false;
+		}
+
+		function removeSurvey($id)
+		{
+			$del=$this->delete($this->table,array($this->id=>$id));
+			if($del->rows_affected) return true;
+			return false;
 		}
 
 	} 

@@ -12,7 +12,7 @@
  ?>
 <div id="wpbody-content" aria-label="Main content" tabindex="0">
   <div class="wrap">
-    <h1><?php echo SCSURVEY_TITLE_P; ?> <a href="<?php echo survey_url($this->menu_slug); ?>" class="page-title-action">Add New</a></h1>
+    <h1><?php echo SCSURVEY_TITLE_P; ?> <a href="<?php echo survey_url($this->submenu_slug); ?>" class="page-title-action">Add New</a></h1>
     <h2 class="screen-reader-text">Filter posts list</h2>
     <ul class="subsubsub">
       <li class="all"> <a class="<?php echo !isset($_GET['state'])?'current':''; ?>"  href="<?php echo survey_url($this->menu_slug); ?>" class="current">All <span class="count">(<?php echo $total; ?>)</span></a></li>
@@ -23,17 +23,15 @@
     <?php endif; ?>
     </ul>
     <form id="posts-filter" method="get">
-      <p class="search-box">
+      <!-- <p class="search-box">
         <label class="screen-reader-text" for="post-search-input">Search <?php echo SCSURVEY_TITLE_P; ?>:</label>
         <input id="post-search-input" name="s" value="" type="search">
         <input id="search-submit" class="button" value="Search <?php echo SCSURVEY_TITLE_P; ?>" type="submit">
-      </p>
+      </p> -->
       <input name="post_status" class="post_status_page" value="all" type="hidden">
       <input name="post_type" class="post_type_page" value="post" type="hidden">
-      <input id="_wpnonce" name="_wpnonce" value="a2bd6ad5b3" type="hidden">
-      <input name="_wp_http_referer" value="/quize/wp-admin/edit.php" type="hidden">
       <div class="tablenav top">
-        <div class="alignleft actions bulkactions">
+        <!-- <div class="alignleft actions bulkactions">
           <label for="bulk-action-selector-top" class="screen-reader-text">Select bulk action</label>
           <select name="action" id="bulk-action-selector-top">
             <option value="-1">Bulk Actions</option>
@@ -42,7 +40,7 @@
             <option value="inactive">Inactive</option>
           </select>
           <input id="doaction" class="button action" value="Apply" type="submit">
-        </div>
+        </div> -->
         <div class="tablenav-pages one-page"><span class="displaying-num"><?php echo $survey_result->num_rows ?> item</span> </div>
         <br class="clear">
       </div>
@@ -73,9 +71,9 @@
             <td class="title column-title has-row-actions column-primary page-title" data-colname="Title"><strong><a class="row-title" href="<?php echo $curlink.'&action=edit'; ?>"><?php echo $nsv->title; ?></a></strong>
               <div class="row-actions"> 
 	              <span class="edit"><a href="<?php echo $curlink.'&action=edit'; ?>">Edit</a> | </span> 
-	              <span class="trash"><a href="<?php echo $curlink.'&action=delete'; ?>" class="submitdelete" aria-label="<?php echo $nsv->title; ?>">Delete</a> | </span> 
+	              <span class="trash"><a href="<?php echo $curlink.'&action=delete'; ?>" class="submitdelete" onClick="return confirm('are you sure want to delete it?')" aria-label="<?php echo $nsv->title; ?>">Delete</a> | </span> 
 	              <span class="questions"><a href="<?php echo $qlink; ?>" rel="permalink">Questions</a> | </span>
-	              <span class="state"><a href="<?php echo $curlink.'&action='.($nsv->state=='active'?'inactive':'active'); ?>" rel="permalink"><?php echo ($nsv->state=='active'?'Inactive':'Active'); ?></a></span>
+	              <span class="state"><a href="<?php echo $curlink.'&action=changestate' ?>" rel="permalink"><?php echo ($nsv->state=='active'?'Inactive':'Active'); ?></a></span>
 	            </div>
               </td>
             <td class="date column-date" data-colname="Date"><input type="text" class="sc-sortcode" <?php echo $nsv->state=="active"?'readonly':'disabled'; ?> value="[<?php echo $this->menu_slug; ?> id='<?php echo $nsv->id; ?>']"></td>
@@ -86,11 +84,11 @@
         </tbody>
         <tfoot>
           <tr>
-            <td id="cb" class="manage-column column-cb check-column"><label class="screen-reader-text" for="cb-select-all-2">Select All</label>
+            <td id="cb" class="manage-column column-cb check-column"><label class="screen-reader-text" for="cb-select-all-1">Select All</label>
               <input id="cb-select-all-1" type="checkbox"></td>
-            <th scope="col" id="title" class="manage-column column-title column-primary sortable desc"> <a href="http://localhost/quize/wp-admin/edit.php?orderby=titl&order=asc"><span>Title</span><span class="sorting-indicator"></span></a> </th>
+            <th scope="col" id="title" class="manage-column column-title column-primary sortable <?php echo ((isset($_GET['order']) && $_GET['order']=='asc' && $_GET['order_by']==$nsv->title)?'desc':'asc'); ?>"> <a href="<?php echo survey_url($this->menu_slug.'&order_by='.$nsv->title.'&order='.((isset($_GET['order']) && $_GET['order']=='asc' && $_GET['order_by']==$nsv->title)?'desc':'asc')); ?>"><span>Title</span><span class="sorting-indicator"></span></a> </th>
             <th scope="col" id="sortcode" class="manage-column column-sortcode "> <a href="#scode"><span>Sortcode</span></a> </th>
-            <th scope="col" id="date" class="manage-column column-date sortable asc"><a href="http://localhost/quize/wp-admin/edit.php?orderby=date&order=desc"><span>Date</span><span class="sorting-indicator"></span></a> </th>
+            <th scope="col" id="date" class="manage-column column-date sortable <?php echo ((isset($_GET['order']) && $_GET['order']=='asc' && $_GET['order_by']==$nsv->active)?'desc':'asc'); ?>"><a href="<?php echo survey_url($this->menu_slug.'&order_by='.$nsv->active.'&order='.((isset($_GET['order']) && $_GET['order']=='asc' && $_GET['order_by']==$nsv->active)?'desc':'asc')); ?>"><span>Date</span><span class="sorting-indicator"></span></a> </th>
           </tr>
         </tfoot>
       </table>

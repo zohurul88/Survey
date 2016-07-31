@@ -18,7 +18,7 @@
 	define(SCSURVEY_VERSION,'1.0.0');
 	define(SCSURVEY_PATH, plugin_dir_path(__FILE__));
 	define(SCSURVEY_URI, plugin_dir_url(__FILE__));
-	define(REMOVE_TABLE_ON_DEACTICE,true);
+	define(REMOVE_TABLE_ON_DEACTIVE,false);
 	if(!class_exists('ScSurvey'))
 	{ 
 		require(SCSURVEY_PATH.'/inc/extfunc.php');
@@ -41,7 +41,7 @@
 
 			function plugin_deactivation()
 			{
-				if(!REMOVE_TABLE_ON_DEACTICE) return null;
+				if(!REMOVE_TABLE_ON_DEACTIVE) return null;
 				global $wpdb;
 				$droplist=array();
 				foreach ($this->registerSchema as $tbl) $droplist[]=$tbl->distroyTbl(); 

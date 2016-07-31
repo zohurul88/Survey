@@ -34,7 +34,7 @@
 }
 .survey h1,.survey h2,.survey h3,.survey h4{
 	margin: 0;
-	padding: 8px 12px;
+	padding: 8px 12px 10px;
 }
 .survey .sc-title{
 	width: 100%;
@@ -56,7 +56,10 @@
 .survey .question-lists li.collapse .question-title{margin-bottom: 10px;}
 .survey .question-lists li .q-textbox{width: 100%;}
 .survey .question-lists li .q-inside{padding: 0 15px;}
-
+.survey #questions.ui-sortable-disabled li .question-head{background: rgb(238, 238, 238);}
+.survey .question-lists li .drag-point{cursor: move;} 
+.survey #questions.ui-sortable-disabled li .drag-point{cursor: default;} 
+.survey .question-lists li .question-title{cursor: pointer;}
 .survey{overflow: hidden;}
 .survey .question-lists li .actions{border-top: 1px solid #eee; padding: 12px 10px 10px; margin-top: 10px;}
 
@@ -65,9 +68,6 @@
 #questions .question.collapse.ui-sortable-helper .q-section{max-height: 0 !important; transition: all ease-in-out 40ms;}
 
 .answer-list .answer{background: #fff;}
-.answer-list .answer.collapse.ui-sortable-helper{max-height: 37px !important;}
-.answer-list .answer.collapse.ui-sortable-helper .answer-inside{max-height: 0 !important; transition: all ease-in-out 40ms;}
-
 #questions .question .q-section{ max-height: 0; overflow: hidden; transition: all ease-in-out 400ms;}
 #questions .question.collapse .q-section{max-height: 1000px;}
 #questions .button-group{font-size: 14px;}
@@ -79,10 +79,11 @@
 .answer-list{padding: 0 20px;}
 .answer-list .answer{position: relative;}
 .answer-list .answer-head .button-group{position: absolute; right: 10px; top: 4px;}
-.answer-list .answer-inside .form-control{display: inline-block; width: 79.5%;}
-.answer-list .answer-inside .form-control+.form-control{width:20%;}
-
-.answer-list .answer .answer-inside{max-height: 0; overflow: hidden; transition:all ease-in-out 300ms;}
-.answer-list .answer.collapse .answer-inside{max-height: 1000px;}
+.answer-list .answer-inside .form-control{display: inline-block; width: 85%;}
+.answer-list .answer-inside .form-control+.small-control{width:14%;}
 .answer-list .answer-action,.answer-list+.answer-action{margin: 10px 5px;}
 .answer-list .button-group .answer-action{margin: 0;}
+
+.answer-list .answer .ans-drag-point,.answer-list .answer .answer-inside{display: inline-block;}
+.answer-list .answer .ans-drag-point{width: 5%;}
+.answer-list .answer .answer-inside{width: 80%;}
