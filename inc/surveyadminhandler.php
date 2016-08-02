@@ -25,6 +25,7 @@ class SurveyAdminHandler
         $this->submenu_slug   = SCSURVEY_SLUG . $this->submenu_slug;
         $this->current_survey = isset($_GET['survey']) ? $_GET['survey'] : null;
         $this->init();
+        add_filter("survey_save_request_list","survey_remove_txt_add_page");
         $this->saveSurvey($this->sv);
         add_action('admin_menu', array($this, 'qz_register_settings_page'));
         add_action('admin_init', array($this, 'priority_checking'));
@@ -39,7 +40,7 @@ class SurveyAdminHandler
             'question-per-page' => '',
             'answer-order'      => 'default',
             'show-intro'        => 'yes',
-            'result-global'     => 'no',
+            'result-global'     => 'yes',
             'show-title'        => 'yes',
             'show-desc'         => 'yes',
             'finish-button-txt' => 'Finish Survey',
@@ -191,11 +192,11 @@ class SurveyAdminHandler
         }
 
         if (!empty($nsvObj->active)) {
-            $nsvObj->active = date('m/d/y', strtotime($nsvObj->active));
+            $nsvObj->active = ($nsvObj->active != '0000-00-00 00:00:00' && $nsvObj->active != "active") ? date('m/d/y', strtotime($nsvObj->active)) : date('m/d/y');
         }
 
         if (!empty($nsvObj->inactive)) {
-            $nsvObj->inactive = ($nsvObj->inactive != '0000-00-00') ? date('m/d/y', strtotime($nsvObj->inactive)) : null;
+            $nsvObj->inactive = ($nsvObj->inactive != '0000-00-00' && $nsvObj->inactive != "inactive") ? date('m/d/y', strtotime($nsvObj->inactive)) : null;
         }
 
         return $nsvObj;
@@ -211,21 +212,21 @@ class SurveyAdminHandler
         $sv   = $this->sv;
         $data = $this->initSurveyData($this->current_survey);
         ?>
-			<div class="survey col-full <?php echo __FUNCTION__; ?> new-survey-area">
-				<div id="" class="postbox ">
-					<h2 class="sv-title"><strong>Survey Set: </strong><span><?php echo $data->{$sv->title} ?></span>
-					<span class=""><a id="question-form" href="#question-form" class="button button-primary right">Add a Question</a></span></h2>
-						<div class="inside">
-							<h3>Question List</h3>
-							<ul id="questions" class="question-lists" data-survey_id="<?php echo $this->current_survey; ?>">
-								<?php include_once SCSURVEY_PATH . '/inc/template/question.php';?>
-							</ul>
-							<a id="question-form-1" href="#question-form" class="button button-primary">Add a Question</a>
-							<div class="clear"></div>
-						</div>
-				</div>
-			</div>
-			<?php
+            <div class="survey col-full <?php echo __FUNCTION__; ?> new-survey-area">
+                <div id="" class="postbox ">
+                    <h2 class="sv-title"><strong>Survey Set: </strong><span><?php echo $data->{$sv->title} ?></span>
+                    <span class=""><a id="question-form" href="#question-form" class="button button-primary right">Add a Question</a></span></h2>
+                        <div class="inside">
+                            <h3>Question List</h3>
+                            <ul id="questions" class="question-lists" data-survey_id="<?php echo $this->current_survey; ?>">
+                                <?php include_once SCSURVEY_PATH . '/inc/template/question.php';?>
+                            </ul>
+                            <a id="question-form-1" href="#question-form" class="button button-primary">Add a Question</a>
+                            <div class="clear"></div>
+                        </div>
+                </div>
+            </div>
+            <?php
 }
 
     public function new_survey_callback($id = null)
@@ -233,25 +234,25 @@ class SurveyAdminHandler
         $sv = $this->sv;
         ?>
 <div class="survey col-full <?php echo __FUNCTION__ ?> new-survey-area">
-	<form action="" method="post">
-		<?php
+    <form action="" method="post">
+        <?php
 $data = $this->initSurveyData($id);
         wp_nonce_field($this->nonce, '_' . $this->nonce);
         ?>
-		<div class="three-fourth">
-		<?php
+        <div class="three-fourth">
+        <?php
 textbox($sv->title, array('title' => 'New Survey', 'class' => 'sc-title'), $data->{$sv->title});
         textbox($sv->short_desc, 'Short Descriptions', $data->{$sv->short_desc}, true);
         texteditor($sv->intor_txt, 'Introduction Content', $data->{$sv->intor_txt}, 'condition open intro-content');
-        texteditor($sv->result_txt, 'Thank You / Result Content', $data->{$sv->result_txt}, 'condition result-content ' . (!empty($data->{$sv->result_txt}) ? 'open' : ''));
+        texteditor($sv->result_txt, 'Thank You / Result Content', $data->{$sv->result_txt}, 'condition result-content open' . (!empty($data->{$sv->result_txt}) ? 'open' : ''));
         texteditor($sv->inactive_txt, 'Inactive Content', $data->{$sv->inactive_txt}, 'condition inactive-content ' . (!empty($data->{$sv->inactive_txt}) ? 'open' : ''));
         ?>
-		</div>
-		<div class="one-fourth survey-aside">
-			<div id="" class="postbox ">
-			<h2 class="hndle"><span>Survey Settings</span></h2>
-				<div class="inside">
-					<?php
+        </div>
+        <div class="one-fourth survey-aside">
+            <div id="" class="postbox ">
+            <h2 class="hndle"><span>Survey Settings</span></h2>
+                <div class="inside">
+                    <?php
 radioList('show-question', 'Show Questions in', array('no' => 'One Page', 'yes' => 'Multiple Page'), $data->settings['show-question'], 'cond-chekbox', 'data-target="question-per-page"');
         textbox('question-per-page', 'Questions Per Page', $data->settings['question-per-page'], false, 'condition question-per-page no-control' . (!empty($data->settings['question-per-page']) ? ' open' : ''));
         //Questions Order
@@ -271,16 +272,16 @@ radioList('show-question', 'Show Questions in', array('no' => 'One Page', 'yes' 
         datepicker($sv->active, 'Active Date', $data->{$sv->active});
         datepicker($sv->inactive, 'Deactivate Date', $data->{$sv->inactive}, 'cond-textbox', ' data-target="inactive-content"');
         ?>
-				</div>
-			</div>
-		</div>
-				<div class="clear"></div>
-				<div class="col-full">
-					<button type="submit" class="button button-primary">Save And Proccess</button>
-				</div>
-				</form>
-			</div>
-			<?php
+                </div>
+            </div>
+        </div>
+                <div class="clear"></div>
+                <div class="col-full">
+                    <button type="submit" class="button button-primary">Save And Proccess</button>
+                </div>
+                </form>
+            </div>
+            <?php
 }
 
     protected function requestProcess($req, $parent = null)
@@ -300,6 +301,9 @@ radioList('show-question', 'Show Questions in', array('no' => 'One Page', 'yes' 
         foreach ($this->need_hook as $field => $func) {
             $req[$field] = call_user_func_array($func, array($req[$field]));
         }
+        if (has_filter('survey_save_request_list')) {
+            $req=apply_filters('survey_save_request_list', $req);
+        } 
         return $req;
     }
 

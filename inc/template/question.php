@@ -61,7 +61,7 @@ echo !empty($question->title) ? $question->title : 'Untitle' ?></span>
 					                <input class="answer-textbox" value="<?php echo htmlspecialchars($answer->title); //str_replace('"',"'",$answer->title); ?>" name="name" placeholder="Answer Title" type="text"/>
 					            </div>
 					            <div class="form-control small-control">
-					                <input class="answer-murk" value="<?php echo $answer->murk; ?>" name="murk" placeholder="Answer Murk" type="text"/>
+					                <input class="answer-murk" value="<?php echo $answer->murk; ?>" name="mark" placeholder="Answer Marks" type="text"/>
 					            </div>
 					        </div>
 					        <div class="button-group">

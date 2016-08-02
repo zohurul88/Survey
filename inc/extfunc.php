@@ -39,12 +39,12 @@ function getClassVars($cls,$type=null)
 	return $out;
 }
 // sc-title
-function datepicker($name,$label='Untitle',$value=null,$container=null,$data=null,$ui=null)
+function datepicker($name,$label='Untitled',$value="",$container=null,$data=null,$ui=null)
 {
 	textbox($name,$label,$value,false,$container,$data,'datepicker '.$ui);
 }
 
-function textbox($name,$label='Untitle',$value=null,$multiline=false,$container=null,$data=null,$ui=null)
+function textbox($name,$label='Untitled',$value="",$multiline=false,$container=null,$data=null,$ui=null)
 {
 	if(empty($name)) return null; 
 	$textbox='';
@@ -72,7 +72,7 @@ function texteditor($name,$label='Untitle',$value=null,$container=null,$data=nul
 	{
 		$container='control editor '.$container;
 		printf('<div class="%s" %s ><div id="post-%s" class="postbox ">',$container,$data,$name);
-	}
+	}	
 	if($label!==false)
 	{
 		$lbcls=(is_array($label) && isset($label['class']))?'label '.$label['class'] : 'label';
@@ -81,11 +81,13 @@ function texteditor($name,$label='Untitle',$value=null,$container=null,$data=nul
 	} 
 
 	echo '<div class="inside">';
+	do_action('before_texteditor_'.$name);
 	wp_editor( 
 		htmlspecialchars_decode($value), 
 		$name , 
 		array('textarea_name'=> $name)
 		);
+	do_action('after_texteditor_'.$name);
 	echo '</div>';
 	if($container!==false) echo '</div></div>';	 
 }
@@ -115,6 +117,40 @@ function radioList($name,$label='Untitle',$list=array(),$val=null,$container=nul
 function survey_url($ext)
 {
 	 return admin_url('admin.php?page='.$ext);
+}
+add_action("before_texteditor_result_txt",'another_option_before_reslut_box');
+function another_option_before_reslut_box()
+{
+    $pages = get_pages();
+    $option='';
+    foreach ($pages as $page) {
+        $option.=sprintf('<option value="%s">%s</option>',$page->ID,$page->post_title);
+    }
+    printf('<div class="result-page"><select id="result_page" name="result_page"><option value="0">--select one--</option>%s</select></div>',$option);
+    printf('<div style="margin-bottom:15px;"></div>');
+    ?>
+    <script>
+        jQuery(document).ready(function($){
+            $(document).on("change","#result_page",function(){
+                if($(this).val()!=0)
+                {
+                    $("#wp-result_txt-wrap").fadeOut();
+                }
+                else
+                {
+                     $("#wp-result_txt-wrap").fadeIn();
+                }
+            });
+        });
+    </script>
+    <?php 
+}
+
+function survey_remove_txt_add_page($req)
+{
+    if(!empty($req['result_page'])) $req['result_txt']=$req['result_page'];
+    unset($req['result_page']);
+    return $req;
 }
 
 /*

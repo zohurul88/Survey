@@ -90,7 +90,7 @@ if(class_exists('wpdb')){
 
 		function all($filter=null,$ext=array())
 		{
-			if(empty($ext)) $ext=array('order_by'=>$this->id,'order'=>'DESC');
+			if(empty($ext) && $ext!==false) $ext=array('order_by'=>$this->id,'order'=>'DESC');
 			if(empty($filter))
 				$this->result($this->table,null,null,$ext);
 			else $this->result($this->table,$filter,null,$ext);
@@ -129,6 +129,26 @@ if(class_exists('wpdb')){
 			$del=$this->delete($this->table,array($this->id=>$id));
 			if($del->rows_affected) return true;
 			return false;
+		}
+
+		function surveyQuestions($survey,$qObj)
+		{
+			$setting=json_decode($survey->settings,true);
+			$order="ASC";
+			if($setting['question-order']=="random")
+			{
+				$order="random";
+			}
+			$sq=$qObj->surveyQuestions($survey->id,$order);
+
+			if(!empty($sq))
+				return $sq;
+			return false;
+		}
+
+		function getSurveyPageByResult($id,$result=null)
+		{
+			return (int)$this->findID($id)->result_txt;
 		}
 
 	} 

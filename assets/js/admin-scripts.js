@@ -633,14 +633,19 @@ jQuery(document).ready(function($) {
         var val = $(this).val(),
             elmLi = $(this).parents('li.answer');
         if ($.trim(val) == '') val = "Untitled";
-        //      elmLi.find('.answer-title').html('<spna>'+val+'</span>');
         elmLi.data('title', val);
     });
+
     $(document).on('keyup', '.answer-murk', function() {
         var val = $(this).val(),
             elmLi = $(this).parents('li.answer');
         if ($.trim(val) == '') val = 0;
         elmLi.data('murk', val);
+    });
+
+    $("#survey-finish-button").click(function(e){
+            
+        e.preventDefault();
     });
 
     function countCurrentItem(element) {

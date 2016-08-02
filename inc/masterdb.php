@@ -39,7 +39,7 @@
 
 			$sqlTxt=$this->selectSqlTxt($tbl,$where,$fields,$extSqlTxt);
 			$result=$wpdb->get_results($sqlTxt);
-			$this->afterQuery($wpdb);
+			$this->afterQuery($wpdb); 
 			return $result;
 		}
 

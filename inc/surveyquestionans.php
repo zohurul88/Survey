@@ -100,9 +100,9 @@ class SurveyQuestionAns extends MasterDB
     public function surveyQuestions($sid, $order = null)
     {
         if (!empty($order)) {
-            $order = array('order_by' => $this->q_order, 'order' => $order);
+            if($order=="random") $order=array('order_by' => 'RAND()');
+            else $order = array('order_by' => $this->q_order, 'order' => $order);
         }
-
         $result = $this->result($this->table, array($this->sid => $sid), null, $order);
         return $this->last_result;
     }

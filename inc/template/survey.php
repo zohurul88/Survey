@@ -76,7 +76,7 @@
 	              <span class="state"><a href="<?php echo $curlink.'&action=changestate' ?>" rel="permalink"><?php echo ($nsv->state=='active'?'Inactive':'Active'); ?></a></span>
 	            </div>
               </td>
-            <td class="date column-date" data-colname="Date"><input type="text" class="sc-sortcode" <?php echo $nsv->state=="active"?'readonly':'disabled'; ?> value="[<?php echo $this->menu_slug; ?> id='<?php echo $nsv->id; ?>']"></td>
+            <td class="date column-date" data-colname="Date"><input type="text" class="sc-sortcode" <?php echo $nsv->state=="active"?'readonly':'disabled'; ?> value="[<?php echo $this->menu_slug; ?> survey='<?php echo $nsv->id; ?>'/]"></td>
             <td class="date column-date" data-colname="Date">Published<br>
               <abbr title="<?php echo $nsv->active; ?>"><?php echo date("d M, Y",strtotime($nsv->active)); ?></abbr></td>
           </tr>
@@ -92,7 +92,7 @@
           </tr>
         </tfoot>
       </table>
-      <div class="tablenav bottom">
+      <!-- <div class="tablenav bottom">
         <div class="alignleft actions bulkactions">
           <label for="bulk-action-selector-bottom" class="screen-reader-text">Select bulk action</label>
           <select name="action2" id="bulk-action-selector-top">
@@ -106,7 +106,7 @@
         <div class="alignleft actions"> </div>
         <div class="tablenav-pages one-page"><span class="displaying-num">1 item</span> <span class="pagination-links"><span class="tablenav-pages-navspan" aria-hidden="true">«</span> <span class="tablenav-pages-navspan" aria-hidden="true">‹</span> <span class="screen-reader-text">Current Page</span><span id="table-paging" class="paging-input">1 of <span class="total-pages">1</span></span> <span class="tablenav-pages-navspan" aria-hidden="true">›</span> <span class="tablenav-pages-navspan" aria-hidden="true">»</span></span></div>
         <br class="clear">
-      </div>
+      </div> -->
     </form>
     <br class="clear">
   </div>
